@@ -1,0 +1,105 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="section">
+        <div class="row">
+            <div class="col s12 m10 offset-m1">
+                <div class="card z-depth-2">
+                    <div class="card-content">
+                        <span class="card-title teal-text text-darken-2 center">
+                            Log in
+                        </span>
+
+                        <p class="center grey-text">
+                            Use your ASC account or Google account to continue.
+                        </p>
+
+                        <div class="row" style="margin-top: 30px;">
+                            <div class="col s12 m7">
+                                <form id="account" method="post">
+                                    <div asp-validation-summary="ModelOnly" class="red-text"></div>
+
+                                    <div class="input-field">
+                                        <input asp-for="Input.Email" class="validate" autocomplete="username" />
+                                        <label asp-for="Input.Email"></label>
+                                        <span asp-validation-for="Input.Email" class="red-text"></span>
+                                    </div>
+
+                                    <div class="input-field">
+                                        <input asp-for="Input.Password" class="validate" autocomplete="current-password" />
+                                        <label asp-for="Input.Password"></label>
+                                        <span asp-validation-for="Input.Password" class="red-text"></span>
+                                    </div>
+
+                                    <p>
+                                        <label>
+                                            <input asp-for="Input.RememberMe" type="checkbox" />
+                                            <span>Remember me?</span>
+                                        </label>
+                                    </p>
+
+                                    <div class="center" style="margin-top: 25px;">
+                                        <button id="login-submit" type="submit"
+                                                class="btn waves-effect waves-light teal">
+                                            Submit
+                                            <i class="material-icons right">send</i>
+                                        </button>
+                                    </div>
+
+                                    <div class="center" style="margin-top: 20px;">
+                                        <p>
+                                            <a asp-page="./ForgotPassword">Forgot your password?</a>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="col s12 m5">
+                                <div class="center" style="margin-top: 15px;">
+                                    <h6 class="grey-text text-darken-2">
+                                        Login using External Providers.
+                                    </h6>
+
+                                    @if (Model.ExternalLogins != null && Model.ExternalLogins.Count > 0)
+                                    {
+                                        <form id="external-account"
+                                              asp-page="./ExternalLogin"
+                                              asp-route-returnUrl="@Model.ReturnUrl"
+                                              method="post">
+                                            @foreach (var provider in Model.ExternalLogins)
+                                            {
+                                                <button type="submit"
+                                                        class="btn waves-effect waves-light teal"
+                                                        name="provider"
+                                                        value="@provider.Name"
+                                                        title="Log in using your @provider.DisplayName account">
+                                                    @provider.DisplayName
+                                                </button>
+                                            }
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <p class="red-text">
+                                            No external authentication providers configured.
+                                        </p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

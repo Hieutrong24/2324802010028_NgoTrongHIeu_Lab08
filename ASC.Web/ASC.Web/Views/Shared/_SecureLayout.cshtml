@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_MasterLayout";
+}
+
+<header class="asc-admin-header">
+    <nav class="asc-topbar">
+        <div class="nav-wrapper">
+            <a asp-area="ServiceRequests"
+                   asp-controller="Dashboard"
+                   asp-action="Dashboard"
+                   class="brand-logo center asc-brand page-title">
+                Automobile Service Center
+            </a>
+
+            <a href="#" data-target="asc-mobile-nav" class="sidenav-trigger">
+                <i class="material-icons">menu</i>
+            </a>
+        </div>
+    </nav>
+
+    @await Component.InvokeAsync("LeftNavigation")
+
+    <form id="logout_form"
+          action="/Identity/Account/Logout?returnUrl=/Home/Index"
+          method="post"
+          style="display:none;">
+        @Html.AntiForgeryToken()
+    </form>
+</header>
+
+<main class="asc-admin-main">
+    <div class="asc-page-container">
+        @RenderBody()
+    </div>
+</main>
+
+<footer class="asc-admin-footer">
+    <div class="asc-footer-inner">
+        Automobile Service Center - Admin Area
+    </div>
+</footer>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

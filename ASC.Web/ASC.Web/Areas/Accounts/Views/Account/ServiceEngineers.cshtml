@@ -1,0 +1,179 @@
+﻿@model ServiceEngineerViewModel
+
+@{
+    ViewData["Title"] = "Service Engineers";
+    Layout = "_SecureLayout";
+}
+
+<div class="section">
+    <h4 class="teal-text text-darken-2">Service Engineers</h4>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="card-panel green lighten-4 green-text text-darken-4">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col s12 m5">
+            <div class="card z-depth-2">
+                <div class="card-content">
+                    <span class="card-title" id="formTitle">Add Service Engineer</span>
+
+                    <form asp-area="Accounts"
+                          asp-controller="Account"
+                          asp-action="ServiceEngineers"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="ServiceEngineer.Id" type="hidden" id="ServiceEngineer_Id" />
+
+                        <div asp-validation-summary="ModelOnly" class="red-text"></div>
+
+                        <div class="input-field">
+                            <input asp-for="ServiceEngineer.UserName" id="ServiceEngineer_UserName" />
+                            <label asp-for="ServiceEngineer.UserName" id="lblUserName"></label>
+                            <span asp-validation-for="ServiceEngineer.UserName" class="red-text"></span>
+                        </div>
+
+                        <div class="input-field">
+                            <input asp-for="ServiceEngineer.Email" id="ServiceEngineer_Email" />
+                            <label asp-for="ServiceEngineer.Email" id="lblEmail"></label>
+                            <span asp-validation-for="ServiceEngineer.Email" class="red-text"></span>
+                        </div>
+
+                        <div class="input-field">
+                            <input asp-for="ServiceEngineer.Password" id="ServiceEngineer_Password" />
+                            <label asp-for="ServiceEngineer.Password" id="lblPassword"></label>
+                            <span asp-validation-for="ServiceEngineer.Password" class="red-text"></span>
+                            <small class="grey-text">
+                                Khi cập nhật tài khoản, có thể để trống Password.
+                            </small>
+                        </div>
+
+                        <p>
+                            <label>
+                                <input asp-for="ServiceEngineer.IsActive" id="ServiceEngineer_IsActive" type="checkbox" />
+                                <span>Is Active</span>
+                            </label>
+                        </p>
+
+                        <div class="center-align" style="margin-top: 25px;">
+                            <button type="submit" class="btn waves-effect waves-light teal">
+                                Save
+                                <i class="material-icons right">save</i>
+                            </button>
+
+                            <button type="button" id="btnResetForm" class="btn waves-effect waves-light grey">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col s12 m7">
+            <div class="card z-depth-2">
+                <div class="card-content">
+                    <span class="card-title">Service Engineer List</span>
+
+                    <table id="serviceEngineersTable" class="striped highlight responsive-table">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.ServiceEngineers != null && Model.ServiceEngineers.Any())
+                            {
+                                foreach (var engineer in Model.ServiceEngineers)
+                                {
+                                    <tr>
+                                        <td>@engineer.UserName</td>
+                                        <td>@engineer.Email</td>
+                                        <td>
+                                            @if (engineer.IsActive)
+                                            {
+                                                <span class="new badge green" data-badge-caption="Active"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="new badge red" data-badge-caption="Deactive"></span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    class="btn-small waves-effect waves-light amber darken-2 btn-edit-engineer"
+                                                    data-id="@engineer.Id"
+                                                    data-username="@engineer.UserName"
+                                                    data-email="@engineer.Email"
+                                                    data-isactive="@engineer.IsActive.ToString().ToLower()">
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="center-align grey-text">
+                                        No service engineers found.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+   
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+          $(document).ready(function () {
+             $('#serviceEngineersTable').DataTable();
+            });
+        document.addEventListener('DOMContentLoaded', function () {
+            var editButtons = document.querySelectorAll('.btn-edit-engineer');
+
+            editButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    document.getElementById('formTitle').innerText = 'Update Service Engineer';
+
+                    document.getElementById('ServiceEngineer_Id').value = this.dataset.id;
+                    document.getElementById('ServiceEngineer_UserName').value = this.dataset.username;
+                    document.getElementById('ServiceEngineer_Email').value = this.dataset.email;
+                    document.getElementById('ServiceEngineer_Password').value = '';
+
+                    document.getElementById('ServiceEngineer_IsActive').checked = this.dataset.isactive === 'true';
+
+                    M.updateTextFields();
+                });
+            });
+
+            document.getElementById('btnResetForm').addEventListener('click', function () {
+                document.getElementById('formTitle').innerText = 'Add Service Engineer';
+
+                document.getElementById('ServiceEngineer_Id').value = '';
+                document.getElementById('ServiceEngineer_UserName').value = '';
+                document.getElementById('ServiceEngineer_Email').value = '';
+                document.getElementById('ServiceEngineer_Password').value = '';
+                document.getElementById('ServiceEngineer_IsActive').checked = true;
+
+                M.updateTextFields();
+            });
+        });
+    </script>
+}

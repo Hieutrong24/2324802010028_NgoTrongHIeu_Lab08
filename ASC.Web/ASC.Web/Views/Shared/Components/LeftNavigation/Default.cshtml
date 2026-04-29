@@ -1,0 +1,96 @@
+@model List<ASC.Web.Navigation.NavigationMenuItem>
+
+@{
+    var roleName = User.IsInRole("Admin")
+        ? "Admin"
+        : User.IsInRole("Engineer")
+            ? "Engineer"
+            : "User";
+
+    var userEmail = User.Identity?.Name ?? "";
+    var currentPath = Context.Request.Path.Value ?? string.Empty;
+}
+
+<ul id="asc-mobile-nav" class="sidenav sidenav-fixed asc-sidebar">
+    <li>
+        <div class="user-view asc-user-view">
+            <div class="asc-avatar-wrap">
+                <i class="material-icons asc-avatar-icon">account_circle</i>
+            </div>
+
+            <div class="asc-user-role">@roleName</div>
+            <div class="asc-user-email" title="@userEmail">@userEmail</div>
+        </div>
+    </li>
+
+    @foreach (var item in Model.OrderBy(x => x.Sequence))
+    {
+        var itemActive = !string.IsNullOrWhiteSpace(item.Link)
+            && currentPath.Equals(item.Link, StringComparison.OrdinalIgnoreCase);
+
+        var nestedActive = item.NestedItems.Any(child =>
+            !string.IsNullOrWhiteSpace(child.Link)
+            && currentPath.Equals(child.Link, StringComparison.OrdinalIgnoreCase));
+
+        if (item.IsNested)
+        {
+            <li>
+                <ul class="collapsible collapsible-accordion asc-collapsible">
+                    <li class="@(nestedActive ? "active" : string.Empty)">
+                        <a href="#!" class="collapsible-header asc-menu-link @(nestedActive ? "asc-active" : string.Empty)" title="@item.DisplayName">
+                            <i class="material-icons">@item.MaterialIcon</i>
+                            <span>@item.DisplayName</span>
+                            <i class="material-icons asc-arrow">expand_more</i>
+                        </a>
+
+                        <div class="collapsible-body asc-submenu-body">
+                            <ul>
+                                @foreach (var child in item.NestedItems.OrderBy(x => x.Sequence))
+                                {
+                                    var childActive = !string.IsNullOrWhiteSpace(child.Link)
+                                        && currentPath.Equals(child.Link, StringComparison.OrdinalIgnoreCase);
+
+                                    <li>
+                                        <a href="@child.Link" class="asc-submenu-link @(childActive ? "asc-active" : string.Empty)" title="@child.DisplayName">
+                                            <i class="material-icons">@child.MaterialIcon</i>
+                                            <span>@child.DisplayName</span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li>
+                @if (item.DisplayName == "Logout")
+                {
+                    <a href="#!" class="asc-menu-link" title="@item.DisplayName" onclick="document.getElementById('logout_form').submit(); return false;">
+                        <i class="material-icons">@item.MaterialIcon</i>
+                        <span>@item.DisplayName</span>
+                    </a>
+                }
+                else
+                {
+                    <a href="@item.Link" class="asc-menu-link @(itemActive ? "asc-active" : string.Empty)" title="@item.DisplayName">
+                        <i class="material-icons">@item.MaterialIcon</i>
+                        <span>@item.DisplayName</span>
+                    </a>
+                }
+            </li>
+        }
+    }
+</ul>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var sidenavElems = document.querySelectorAll('.sidenav');
+        M.Sidenav.init(sidenavElems, { edge: 'left' });
+
+        var collapsibleElems = document.querySelectorAll('.collapsible');
+        M.Collapsible.init(collapsibleElems, { accordion: false });
+    });
+</script>

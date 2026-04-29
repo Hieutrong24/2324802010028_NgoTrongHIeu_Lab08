@@ -1,0 +1,43 @@
+@{
+    ViewData["Title"] = "Service Requests Dashboard";
+    Layout = "_SecureLayout";
+}
+
+<section class="asc-dashboard-hero">
+    <h1 class="asc-page-title">Service Requests Dashboard</h1>
+    <p class="asc-page-subtitle">
+        Monitor service requests, follow processing status, and access key ASC service workflows from one clean dashboard.
+    </p>
+</section>
+
+<section class="asc-card-grid">
+    <div class="card teal asc-stat-card">
+        <div class="card-content white-text">
+            <div class="asc-stat-icon">
+                <i class="material-icons">fiber_new</i>
+            </div>
+            <span class="card-title">New Requests</span>
+            <p>View and manage newly submitted customer service requests.</p>
+        </div>
+    </div>
+
+    <div class="card amber darken-1 asc-stat-card">
+        <div class="card-content white-text">
+            <div class="asc-stat-icon">
+                <i class="material-icons">build_circle</i>
+            </div>
+            <span class="card-title">In Progress</span>
+            <p>Track service requests currently handled by service engineers.</p>
+        </div>
+    </div>
+
+    <div class="card blue lighten-1 asc-stat-card">
+        <div class="card-content white-text">
+            <div class="asc-stat-icon">
+                <i class="material-icons">task_alt</i>
+            </div>
+            <span class="card-title">Completed</span>
+            <p>Review completed service requests and service history.</p>
+        </div>
+    </div>
+</section>

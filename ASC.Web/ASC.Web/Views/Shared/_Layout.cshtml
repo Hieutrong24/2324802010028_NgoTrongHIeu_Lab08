@@ -1,0 +1,50 @@
+﻿@using Microsoft.Extensions.Options
+@inject IOptions<ASC.Web.Configuration.ApplicationSettings> Settings
+
+@{
+    Layout = "_MasterLayout";
+}
+
+<nav class="teal lighten-1" role="navigation">
+    <div class="nav-wrapper container">
+        <a asp-controller="Home" asp-action="Index" class="brand-logo">
+            @Settings.Value.ApplicationTitle
+        </a>
+
+        <ul class="right hide-on-med-and-down">
+            <li>
+                <a asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    @RenderBody()
+</main>
+
+<footer class="page-footer teal">
+    <div class="container">
+        <div class="row">
+            <div class="col s12">
+                <h5 class="white-text">Automobile Service Center</h5>
+                <p class="grey-text text-lighten-4">
+                    We provide high quality automobile services for our customers.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-copyright">
+        <div class="container">
+            © @DateTime.Now.Year - Automobile Service Center
+        </div>
+    </div>
+</footer>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

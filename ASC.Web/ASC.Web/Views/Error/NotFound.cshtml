@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "404 - Page Not Found";
+    Layout = "_Layout";
+}
+
+<section class="asc-error-page">
+    <div class="asc-error-card">
+        <p class="asc-error-code">404</p>
+        <h1 class="asc-error-title">Page not found</h1>
+        <p class="asc-error-text">
+            The page you are looking for may have been moved, removed, or the address is incorrect.
+            Please return to the dashboard or go back to the home page.
+        </p>
+
+        <a asp-area="ServiceRequests"
+           asp-controller="Dashboard"
+           asp-action="Dashboard"
+           class="btn waves-effect waves-light teal">
+            Go to Dashboard
+            <i class="material-icons right">dashboard</i>
+        </a>
+
+        <a asp-area=""
+           asp-controller="Home"
+           asp-action="Index"
+           class="btn waves-effect waves-light grey" style="margin-left: 10px;">
+            Back Home
+        </a>
+    </div>
+</section>

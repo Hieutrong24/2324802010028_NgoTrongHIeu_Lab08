@@ -1,0 +1,23 @@
+@{
+    var statusCode = ViewData["StatusCode"]?.ToString() ?? "Error";
+    ViewData["Title"] = $"{statusCode} - Request Error";
+    Layout = "_Layout";
+}
+
+<section class="asc-error-page">
+    <div class="asc-error-card">
+        <p class="asc-error-code">@statusCode</p>
+        <h1 class="asc-error-title">Request could not be completed</h1>
+        <p class="asc-error-text">
+            Something went wrong while processing this request. Please return to a safe page and try again.
+        </p>
+
+        <a asp-area=""
+           asp-controller="Home"
+           asp-action="Index"
+           class="btn waves-effect waves-light teal">
+            Back Home
+            <i class="material-icons right">home</i>
+        </a>
+    </div>
+</section>

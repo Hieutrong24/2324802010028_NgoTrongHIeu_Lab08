@@ -1,0 +1,182 @@
+﻿@model CustomerViewModel
+
+@{
+    ViewData["Title"] = "Customers";
+    Layout = "_SecureLayout";
+}
+
+<div class="section asc-account-page asc-customers-page">
+    <div class="asc-page-heading">
+        <h4>Customers</h4>
+        <p>Manage customer accounts and quickly update active/deactive status.</p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="card-panel green lighten-4 green-text text-darken-4">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="asc-account-grid">
+        <div class="card asc-panel-card asc-list-panel">
+            <div class="card-content">
+                <div class="asc-panel-title">
+                    <span class="card-title">Customer List</span>
+                    <i class="material-icons">groups</i>
+                </div>
+
+                <div class="asc-table-scroll">
+                    <table id="customersTable" class="striped highlight asc-data-table">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.Customers != null && Model.Customers.Any())
+                            {
+                                foreach (var customer in Model.Customers)
+                                {
+                                    <tr>
+                                        <td class="asc-username-cell" title="@customer.UserName">@customer.UserName</td>
+                                        <td class="asc-email-cell" title="@customer.Email">@customer.Email</td>
+                                        <td>
+                                            @if (customer.IsActive)
+                                            {
+                                                <span class="asc-status-pill active">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="asc-status-pill inactive">Deactive</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                    class="btn-small waves-effect waves-light asc-edit-btn btn-edit-customer"
+                                                    data-id="@customer.Id"
+                                                    data-username="@customer.UserName"
+                                                    data-email="@customer.Email"
+                                                    data-isactive="@customer.IsActive.ToString().ToLower()">
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="center-align asc-empty-row">
+                                        No customers found.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card asc-panel-card asc-detail-panel">
+            <div class="card-content">
+                <div class="asc-panel-title">
+                    <span class="card-title">Customer Details</span>
+                    <i class="material-icons">manage_accounts</i>
+                </div>
+
+                <form asp-area="Accounts"
+                      asp-controller="Account"
+                      asp-action="Customers"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input asp-for="Customer.Id" type="hidden" id="Customer_Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="red-text"></div>
+
+                    <div class="input-field">
+                        <input asp-for="Customer.UserName" id="Customer_UserName" readonly />
+                        <label asp-for="Customer.UserName" class="active"></label>
+                    </div>
+
+                    <div class="input-field">
+                        <input asp-for="Customer.Email" id="Customer_Email" readonly />
+                        <label asp-for="Customer.Email" class="active"></label>
+                    </div>
+
+                    <p>
+                        <label>
+                            <input asp-for="Customer.IsActive" id="Customer_IsActive" type="checkbox" />
+                            <span>Is Active</span>
+                        </label>
+                    </p>
+
+                    <div class="asc-form-actions">
+                        <button type="submit" class="btn waves-effect waves-light teal">
+                            Save
+                            <i class="material-icons right">save</i>
+                        </button>
+
+                        <button type="button" id="btnResetCustomerForm" class="btn waves-effect waves-light grey">
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(function () {
+            $('#customersTable').DataTable({
+                pageLength: 5,
+                lengthMenu: [[5, 10, 25, -1], [5, 10, 25, 'All']],
+                autoWidth: false,
+                dom: '<"asc-dt-toolbar"<"asc-dt-length"l><"asc-dt-search"f>>rt<"asc-dt-footer"<"asc-dt-info"i><"asc-dt-pagination"p>>',
+                columnDefs: [
+                    { targets: 2, width: '15%' },
+                    { targets: 3, width: '13%', orderable: false, searchable: false }
+                ],
+                language: {
+                    search: '',
+                    searchPlaceholder: 'Search customers...',
+                    lengthMenu: 'Show _MENU_ entries',
+                    info: 'Showing _START_ to _END_ of _TOTAL_ entries',
+                    infoEmpty: 'No entries',
+                    paginate: {
+                        previous: 'Previous',
+                        next: 'Next'
+                    }
+                }
+            });
+
+            $('.btn-edit-customer').on('click', function () {
+                $('#Customer_Id').val(this.dataset.id);
+                $('#Customer_UserName').val(this.dataset.username);
+                $('#Customer_Email').val(this.dataset.email);
+                $('#Customer_IsActive').prop('checked', this.dataset.isactive === 'true');
+
+                M.updateTextFields();
+            });
+
+            $('#btnResetCustomerForm').on('click', function () {
+                $('#Customer_Id').val('');
+                $('#Customer_UserName').val('');
+                $('#Customer_Email').val('');
+                $('#Customer_IsActive').prop('checked', true);
+
+                M.updateTextFields();
+            });
+        });
+    </script>
+}
